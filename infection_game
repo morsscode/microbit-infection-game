@@ -1,0 +1,40 @@
+let infected = 0
+let showing = 0
+input.onButtonPressed(Button.A, () => {
+    if (infected == 0) {
+        radio.sendNumber(0)
+    }
+    if (infected == 1) {
+        radio.sendNumber(1)
+    }
+
+})
+input.onButtonPressed(Button.B, () => {
+    infected = 1
+
+})
+radio.onReceivedNumber(function (receivedNumber) {
+    let strength = 140 - Math.abs(radio.receivedPacket(RadioPacketProperty.SignalStrength))
+    let rand = strength * Math.randomRange(0, 100);
+    if (receivedNumber == 1 && rand > 8000) {
+        infected = 1
+    }
+})
+basic.forever(() => {
+    if (!infected) {
+        basic.showIcon(IconNames.Happy)
+    }
+    if (infected) {
+        showing++
+    }
+    if (infected && showing > 20) {
+        basic.showIcon(IconNames.Sad)
+    }
+    if (infected == 0) {
+        radio.sendNumber(0)
+    }
+    if (infected == 1) {
+        radio.sendNumber(1)
+    }
+    basic.pause(100)
+})
